@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>bibliotecaAPI</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>Sngular</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>
+
+// Hecharle un ojo a este codigo y hacer un barrido de el 
+
+import{ LightningElement, track } from 'lwc';
+
+const columns = [
+        { label: 'Titulo', fieldName: 'kind', type: 'text' },
+        { label: 'Subtitulo', fieldName: 'id', type: 'id' },
+        { label: 'Autor', fieldName: 'selfLink', type: 'url'},
+        { label: 'Descripcion', fieldName: 'tabla.volumeInfo.title', type: 'text' }
+    ];
+
+
+export default class bibliotecaAPI extends LightningElement {
+columns = columns;
+@track tabla;
+@track books; //para guarda titulos de libros
+connectedCallback(){
+    fetch('https://www.googleapis.com/books/v1/volumes?langRestrict=en&q=salesforce', // url de api consumida
+    {
+      // Request type
+      method:"GET",
+      headers:{
+        "Content-Type": "application/json",
+      }
+    })
+
+    .then((response) => response.json()) 
+
+      /* response.json() retorna el valor de la promesa */
+      //el siguiente then no se elimina ya que es el maestro
+      //que guarda el valor de los items
+      //JSON.stringify convierte json a texto plano
+    .then((response) => {
+      console.log('response pintado ' + JSON.stringify(response));
+        console.log('items ' + response['items']);
+        //items tiene un formato de objeto no es un array
+        console.log('response formt ' + JSON.stringify(response['items']));
+        this.tabla = response['items']; //linea original
+
+        console.log('tabla pura ' + this.tabla[0].volumeInfo);
+        let indice = JSON.parse(this.tabla);
+        console.log('indice puro ' + indice);
+        console.log('indice ' + JSON.stringify(indice));
+        // let volumen = indice['volumeInfo'];
+        // let volumen = JSON.stringify(indice); //poner atencion a lo que pinta la consola
+        // console.log('volumen ' + volumen);
+
+
+    }) //-> se cierra el fech en el ultimo the
+
+
+    .then((tabla) => {
+        let aux = tabla;
+
+        console.log('Valor aux ' + JSON.stringify(aux));
+      });
+}
+/* Retomar posteriormente el metodo fetch asincrono */
+ //probando el metodo fetch asincrono
+  async handleFetch() {
+    let endPoint = 'https://www.googleapis.com/books/v1/volumes?langRestrict=en&q=salesforce';
+    const response = await fetch(endPoint);
+    const repos = await response.json();
+    this.repos = repos;
+    console.log('revisando contenido ' + JSON.stringify(repos.items));
+  }
+}

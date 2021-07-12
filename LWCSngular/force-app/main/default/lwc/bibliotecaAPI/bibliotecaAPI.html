@@ -1,0 +1,30 @@
+<!-- <template>
+	<lightning-card title="pruebaLWC Sngular">
+		<template if:true={tabla}>
+			<table>
+			<tr>
+				<th>Nombre del libro</th>
+				<th>Subtitulo</th>
+				<th>Autor</th>
+				<th>Precio</th>
+			</tr>
+			<template for:each={tabla.items} for:item="tab">
+				<tr key={tab.id}>
+					<td>{tab.volumeInfo.title}</td>
+					<td>{tab.volumeInfo.subtitle}</td>
+					<td>{tab.volumeInfo.authors}</td>
+					<td>{tab.volumeInfo.description}</td>
+				</tr>
+			</template>
+			</table>
+		</template>
+	</lightning-card>
+</template> -->
+
+<!-- We are looking at display data in 
+	tabular format with data being fed 
+	to data and columns attribute.-->
+	<template>
+		<lightning-datatable key-field="id" data={tabla} columns={columns}>
+		</lightning-datatable>
+	</template>
